@@ -38,6 +38,8 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Nunito',sans-serif
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @keyframes typingPulse{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
 @keyframes slideRight{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes slideLeft{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 #bottom-nav{display:flex;border-top:1.5px solid var(--gray-100);background:var(--white);padding:8px 0 calc(14px + var(--safe-bottom));flex-shrink:0;z-index:50;}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;color:var(--gray-400);font-family:'Nunito',sans-serif;font-size:10px;font-weight:600;position:relative;padding:4px 0;}
@@ -178,7 +180,6 @@ body.dark .conf-react-btn{background:#2d2640;}
 /* ── GAME SCREEN ──────────────────────────────────────────────────────────── */
 @keyframes gamePulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 0 14px rgba(239,68,68,0)}}
 @keyframes gameGlow{0%,100%{text-shadow:0 0 20px rgba(239,68,68,.6),0 0 40px rgba(239,68,68,.2)}50%{text-shadow:0 0 30px rgba(239,68,68,.9),0 0 60px rgba(239,68,68,.4)}}
-@keyframes particleFloat{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(-80px) rotate(360deg);opacity:0}}
 @keyframes playBtnPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 .game-screen{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#080510;}
 .game-hero{position:relative;width:100%;height:300px;flex-shrink:0;overflow:hidden;}
@@ -200,6 +201,30 @@ body.dark .conf-react-btn{background:#2d2640;}
 .game-play-btn{width:100%;padding:18px;border-radius:16px;border:none;background:linear-gradient(135deg,#ef4444,#b91c1c);color:white;font-size:17px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;letter-spacing:.3px;box-shadow:0 8px 28px rgba(239,68,68,.45);transition:transform .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;gap:10px;animation:playBtnPulse 2s ease-in-out infinite;}
 .game-play-btn:active{transform:scale(.97);box-shadow:0 4px 14px rgba(239,68,68,.3);}
 .game-warning{text-align:center;font-size:11px;color:rgba(255,255,255,.3);font-weight:600;margin-top:10px;}
+
+/* ── COMMUNITY ACTIVITIES SCREEN ─────────────────────────────────────────── */
+@keyframes carouselSlide{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.community-screen{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#0a0814;}
+.community-slide{animation:carouselSlide .3s ease;}
+.community-poster{width:100%;height:260px;object-fit:cover;border-radius:20px;display:block;margin-bottom:16px;}
+.community-tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.5px;margin-bottom:10px;}
+.community-cta-btn{width:100%;padding:16px;border-radius:16px;border:none;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s,opacity .12s;}
+.community-cta-btn:active{transform:scale(.97);}
+.carousel-dots{display:flex;gap:8px;justify-content:center;margin:14px 0 4px;}
+.carousel-dot{width:8px;height:8px;border-radius:4px;background:rgba(255,255,255,.25);transition:all .3s;cursor:pointer;}
+.carousel-dot.active{background:white;width:22px;}
+.carousel-nav{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;}
+.carousel-arrow{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.carousel-arrow:active{background:rgba(255,255,255,.2);}
+.carousel-arrow:disabled{opacity:.3;cursor:not-allowed;}
+
+/* ── WATCH MOVIE SCREEN ───────────────────────────────────────────────────── */
+@keyframes movieGlow{0%,100%{box-shadow:0 0 30px rgba(239,68,68,.3)}50%{box-shadow:0 0 60px rgba(239,68,68,.5)}}
+.movie-screen{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#06040d;}
+.movie-poster-wrap{padding:24px 28px 16px;display:flex;justify-content:center;}
+.movie-poster{width:100%;max-width:280px;border-radius:20px;display:block;animation:movieGlow 3s ease-in-out infinite;}
+.watch-now-btn{width:100%;padding:18px;border-radius:16px;border:none;background:linear-gradient(135deg,#dc2626,#991b1b);color:white;font-size:17px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 8px 28px rgba(220,38,38,.4);display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s;}
+.watch-now-btn:active{transform:scale(.98);}
 </style>
 </head>
 <body>
@@ -256,9 +281,12 @@ const STATE = {
   moodAILoading: false,
   compatCache: {},
   compatLoading: null,
-  // NEW
   showJournal: false,
   showGame: false,
+  // NEW SCREENS
+  showCommunityActivities: false,
+  communitySlide: 0,
+  showWatchMovie: false,
 };
 
 const INTERESTS = [
@@ -350,9 +378,18 @@ const GROUP_PERSONALITIES = {
   c8:'You are in a coding/tech group. Be geeky and enthusiastic about tech, projects, hackathons. Use 💻🛠️ emojis.',
 };
 
-// Image data (base64)
 const JOURNAL_IMG = 'journal.jpeg';
 const GAME_IMG = 'final_fate.jpeg';
+
+// Community Activities slide images
+const COMMUNITY_IMAGES = {
+  carnival: 'image_5.png',
+  boardgame: 'image_6.png',
+  chaatpebaat: 'image_7.png',
+};
+
+// Watch a Movie poster
+const MOVIE_POSTER = 'image_8.png';
 
 function avatarBg(name=''){
   const h=(name.charCodeAt(0)||0)*37+((name.charCodeAt(1)||0)*13);
@@ -411,9 +448,11 @@ const ICONS={
   camera:`<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="COLOR" stroke-width="1.9"/><circle cx="12" cy="13" r="4" stroke="COLOR" stroke-width="1.9"/>`,
   sparkle:`<path d="M12 2l2.4 7.2H22l-6.2 4.5 2.4 7.2L12 16.4l-6.2 5.1 2.4-7.2L2 9.2h7.6z" fill="COLOR"/>`,
   help:`<circle cx="12" cy="12" r="10" stroke="COLOR" stroke-width="1.9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="COLOR" stroke-width="1.9" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="COLOR" stroke-width="2.8" stroke-linecap="round"/>`,
-  // NEW ICONS
   book:`<path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="COLOR" stroke-width="1.9" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="COLOR" stroke-width="1.9" stroke-linejoin="round"/>`,
   gamepad:`<rect x="2" y="6" width="20" height="12" rx="5" stroke="COLOR" stroke-width="1.9"/><path d="M6 12h4M8 10v4" stroke="COLOR" stroke-width="1.9" stroke-linecap="round"/><circle cx="15" cy="10" r="1" fill="COLOR"/><circle cx="18" cy="12" r="1" fill="COLOR"/><circle cx="15" cy="14" r="1" fill="COLOR"/>`,
+  flag:`<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" stroke="COLOR" stroke-width="1.9" stroke-linejoin="round"/><line x1="4" y1="22" x2="4" y2="15" stroke="COLOR" stroke-width="1.9" stroke-linecap="round"/>`,
+  film:`<rect x="2" y="2" width="20" height="20" rx="2.18" stroke="COLOR" stroke-width="1.9"/><line x1="7" y1="2" x2="7" y2="22" stroke="COLOR" stroke-width="1.9"/><line x1="17" y1="2" x2="17" y2="22" stroke="COLOR" stroke-width="1.9"/><line x1="2" y1="12" x2="22" y2="12" stroke="COLOR" stroke-width="1.9"/><line x1="2" y1="7" x2="7" y2="7" stroke="COLOR" stroke-width="1.9"/><line x1="2" y1="17" x2="7" y2="17" stroke="COLOR" stroke-width="1.9"/><line x1="17" y1="17" x2="22" y2="17" stroke="COLOR" stroke-width="1.9"/><line x1="17" y1="7" x2="22" y2="7" stroke="COLOR" stroke-width="1.9"/>`,
+  activity:`<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="COLOR" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`,
 };
 
 function mkAvatar(name, size=42, extraStyle='', pic=null){
@@ -472,7 +511,7 @@ RULES:
 async function getAIHelp(helpHistory, userMsg) {
   const systemPrompt = `You are CU Circle's friendly AI assistant — a warm, helpful guide for Chitkara University students using the CU Circle social app.
 The app helps students who feel lonely or left out to connect through shared interests and "circles" (group activities).
-Features: Circles (group chats/activities), Connect (find people by interests), Messages (DMs + group chat), Moods, Profile, Anonymous Confessions, Motivational Journal (Built Not Born - ₹499), Final Fate game.
+Features: Circles (group chats/activities), Connect (find people by interests), Messages (DMs + group chat), Moods, Profile, Anonymous Confessions, Motivational Journal (Built Not Born - ₹499), Community Activities (carnival, board game, Chaat pe Baat food event), Watch a Movie (Fear of Participation).
 You help with: how to use the app, social anxiety tips, finding friends, navigating campus life, app features, emotional support.
 RULES:
 - Be warm, empathetic, encouraging
@@ -700,6 +739,11 @@ function buildInterests(){
 
 function buildMain(content){
   const mainWrap=el('div',{style:{flex:'1',display:'flex',flexDirection:'column',overflow:'hidden',position:'relative'}});
+
+  // New screens from side nav
+  if(STATE.showCommunityActivities){mainWrap.appendChild(buildCommunityActivitiesScreen());content.appendChild(mainWrap);return;}
+  if(STATE.showWatchMovie){mainWrap.appendChild(buildWatchMovieScreen());content.appendChild(mainWrap);return;}
+
   if(STATE.showJournal){mainWrap.appendChild(buildJournalScreen());content.appendChild(mainWrap);return;}
   if(STATE.showGame){mainWrap.appendChild(buildGameScreen());content.appendChild(mainWrap);return;}
   if(STATE.chatTarget){mainWrap.appendChild(buildChat());content.appendChild(mainWrap);return;}
@@ -744,6 +788,9 @@ function buildTabContent(){
   return wrap;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// HOME SCREEN — REFACTORED (removed Journal card + Live Campus Chat card)
+// ─────────────────────────────────────────────────────────────────────────────
 function buildHome(){
   const container=el('div',{style:{display:'flex',flexDirection:'column',flex:'1',overflow:'hidden'}});
   const topBar=el('div',{style:{padding:'16px 20px 0',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:'0'}});
@@ -756,25 +803,14 @@ function buildHome(){
   const scroll=el('div',{className:'scroll',style:{padding:'14px 20px 120px'}});
   const h=new Date().getHours();
   const greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  scroll.innerHTML=`<p style="font-size:13px;color:var(--gray-400);font-weight:600;margin-bottom:2px;">${greet},</p><h2 style="font-size:24px;font-weight:900;color:var(--gray-800);margin-bottom:16px;">Hi, ${STATE.user.firstName} 👋</h2>`;
-  const aiCard=el('div',{style:{background:'linear-gradient(135deg,#1e1b4b,var(--purple))',borderRadius:'20px',padding:'16px 18px',marginBottom:'14px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer'},onClick:()=>{STATE.helpOpen=true;render();}});
+  scroll.innerHTML=`<p style="font-size:13px;color:var(--gray-400);font-weight:600;margin-bottom:2px;">${greet},</p><h2 style="font-size:24px;font-weight:900;color:var(--gray-800);margin-bottom:18px;">Hi, ${STATE.user.firstName} 👋</h2>`;
+
+  // CircleAI card — KEPT
+  const aiCard=el('div',{style:{background:'linear-gradient(135deg,#1e1b4b,var(--purple))',borderRadius:'20px',padding:'16px 18px',marginBottom:'16px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer'},onClick:()=>{STATE.helpOpen=true;render();}});
   aiCard.innerHTML=`<div style="width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none">${ICONS.sparkle.replace(/COLOR/g,'white')}</svg></div><div><p style="color:white;font-weight:900;font-size:14px;margin-bottom:2px;">CircleAI is here! ✨</p><p style="color:rgba(255,255,255,.75);font-size:12px;font-weight:600;">Ask me anything — campus life, app tips, or just chat</p></div>`;
   scroll.appendChild(aiCard);
 
-  // Journal promo card
-  const journalCard=el('div',{style:{background:'linear-gradient(135deg,#1a1000,#3d2c00)',borderRadius:'20px',padding:'14px 18px',marginBottom:'14px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',border:'1px solid rgba(201,162,39,.25)'},onClick:()=>{STATE.showJournal=true;render();}});
-  journalCard.innerHTML=`<div style="width:44px;height:44px;border-radius:13px;background:rgba(201,162,39,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">📔</div><div><p style="color:#f0c040;font-weight:900;font-size:14px;margin-bottom:2px;">Built Not Born Journal</p><p style="color:rgba(255,255,255,.6);font-size:12px;font-weight:600;">Your growth story starts here · ₹499</p></div><div style="margin-left:auto;background:rgba(201,162,39,.2);border:1px solid rgba(201,162,39,.4);border-radius:10px;padding:4px 10px;font-size:11px;font-weight:800;color:#f0c040;white-space:nowrap;">View →</div>`;
-  scroll.appendChild(journalCard);
-
-  // Game promo card
-  const gameCard=el('div',{style:{background:'linear-gradient(135deg,#0f0008,#2d000a)',borderRadius:'20px',padding:'14px 18px',marginBottom:'20px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',border:'1px solid rgba(239,68,68,.25)'},onClick:()=>{STATE.showGame=true;render();}});
-  gameCard.innerHTML=`<div style="width:44px;height:44px;border-radius:13px;background:rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">🎮</div><div><p style="color:#ef4444;font-weight:900;font-size:14px;margin-bottom:2px;">Final Fate · Play Now</p><p style="color:rgba(255,255,255,.6);font-size:12px;font-weight:600;">Choice & consequences game — Free!</p></div><div style="margin-left:auto;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:4px 10px;font-size:11px;font-weight:800;color:#ef4444;white-space:nowrap;">Play →</div>`;
-  scroll.appendChild(gameCard);
-
-  const liveCard=el('div',{style:{background:'linear-gradient(135deg,#0f4c2a,var(--green))',borderRadius:'20px',padding:'14px 18px',marginBottom:'20px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer'},onClick:()=>{STATE.showRealChat=true;render();}});
-  liveCard.innerHTML=`<div style="width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">🔴</div><div><p style="color:white;font-weight:900;font-size:14px;margin-bottom:2px;">Live Campus Chat</p><p style="color:rgba(255,255,255,.8);font-size:12px;font-weight:600;">Real students + AI personas · Join now</p></div>`;
-  scroll.appendChild(liveCard);
-
+  // ── MOOD SECTION — KEPT ──────────────────────────────────────────────────
   const moodBox=el('div',{style:{background:'var(--purple-pale)',borderRadius:'20px',padding:'16px',marginBottom:'20px'}});
   moodBox.innerHTML=`<p style="font-size:13px;font-weight:800;color:var(--purple);margin-bottom:12px;">How are you feeling today?</p>`;
   const moodRow=el('div',{style:{display:'flex',gap:'6px',overflowX:'auto',paddingBottom:'2px'}});
@@ -812,14 +848,19 @@ function buildHome(){
     moodRow.appendChild(btn);
   });
   moodBox.appendChild(moodRow);moodBox.appendChild(tipBox);scroll.appendChild(moodBox);
+
+  // Join circles banner — KEPT
   const banner=el('div',{className:'gradient-card',style:{marginBottom:'22px'}});
   banner.innerHTML=`<div style="position:absolute;right:-10px;bottom:-10px;font-size:80px;opacity:.12;">👥</div><p style="color:white;font-weight:900;font-size:16px;line-height:1.35;max-width:72%;margin-bottom:12px;">Join a circle. Find your people. You don't have to do it alone.</p><button style="background:rgba(255,255,255,.25);border:none;border-radius:20px;padding:8px 16px;color:white;font-weight:800;font-size:12px;cursor:pointer;font-family:Nunito;" onclick="STATE.activeTab='circles';render()">Explore Circles →</button>`;
   scroll.appendChild(banner);
+
+  // Circles section
   const cHeader=el('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}});
   cHeader.innerHTML=`<p style="font-size:16px;font-weight:900;color:var(--gray-800);">Circles happening now</p><button class="btn-ghost" style="color:var(--purple);font-weight:800;font-size:13px;" onclick="STATE.activeTab='circles';render()">See all</button>`;
   scroll.appendChild(cHeader);
   CIRCLES.slice(0,3).forEach(c=>scroll.appendChild(buildCircleCard(c)));
 
+  // Confessions
   const confHead=el('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px',marginTop:'22px'}});
   confHead.innerHTML=`<p style="font-size:16px;font-weight:900;color:var(--gray-800);">🤫 Anonymous Confessions</p>`;
   const confBtn=el('button',{className:'btn-sm',style:{fontSize:'11px'},onClick:()=>{STATE.confessionInput=true;render();}});
@@ -1323,7 +1364,10 @@ function buildCreateModal(){
   overlay.appendChild(sheet);return overlay;
 }
 
-// ── MENU PANEL — updated with Journal & Game items ─────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SIDE NAVIGATION DRAWER — Updated with Community Activities, Watch a Movie,
+// Built Not Born Journal
+// ─────────────────────────────────────────────────────────────────────────────
 function buildMenuPanel(){
   const overlay=el('div',{className:'overlay',style:{zIndex:'300'},onClick:(e)=>{if(e.target===overlay){STATE.showMenu=false;render();}}});
   const sheet=el('div',{style:{position:'absolute',top:'0',left:'0',bottom:'0',width:'78%',background:'var(--white)',boxShadow:'4px 0 24px rgba(0,0,0,.15)',display:'flex',flexDirection:'column',padding:'0',zIndex:'301',animation:'slideRight .3s ease',overflow:'hidden'}});
@@ -1333,67 +1377,72 @@ function buildMenuPanel(){
   sheet.appendChild(head);
   const body=el('div',{style:{flex:'1',overflowY:'auto',padding:'14px 0'}});
 
-  // Separator label
-  function makeSeparator(label){
+  function makeNavRow(iconName, label, action, iconBg='var(--purple-pale)', iconColor='var(--purple)', sublabel=null){
+    const row=el('button',{style:{display:'flex',alignItems:'center',gap:'16px',width:'100%',padding:'13px 22px',border:'none',background:'none',cursor:'pointer',fontFamily:'Nunito',textAlign:'left'},onClick:action});
+    const iconWrap=el('div',{style:{width:'38px',height:'38px',borderRadius:'12px',background:iconBg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0'}});
+    iconWrap.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none">${ICONS[iconName].replace(/COLOR/g,iconColor)}</svg>`;
+    const textWrap=el('div');
+    if(sublabel){
+      textWrap.innerHTML=`<p style="font-size:14px;font-weight:800;color:var(--gray-800);line-height:1.2;">${label}</p><p style="font-size:11px;font-weight:600;color:var(--gray-500);margin-top:1px;">${sublabel}</p>`;
+    } else {
+      textWrap.innerHTML=`<span style="font-size:14px;font-weight:800;color:var(--gray-700);">${label}</span>`;
+    }
+    row.appendChild(iconWrap);row.appendChild(textWrap);
+    return row;
+  }
+
+  function makeSep(label){
     const sep=el('div',{style:{padding:'10px 22px 4px'}});
     sep.innerHTML=`<p style="font-size:10px;font-weight:800;color:var(--gray-400);letter-spacing:.8px;text-transform:uppercase;">${label}</p>`;
     return sep;
   }
 
-  const mainMenuItems=[
-    {icon:'home',     label:'Home',              action:()=>{STATE.activeTab='home';   STATE.showMenu=false;render();}},
-    {icon:'circles',  label:'Open Circles',       action:()=>{STATE.activeTab='circles';STATE.showMenu=false;render();}},
-    {icon:'connect',  label:'Find People',         action:()=>{STATE.activeTab='connect';STATE.showMenu=false;render();}},
-    {icon:'msg',      label:'Messages',            action:()=>{STATE.activeTab='messages';STATE.showMenu=false;render();}},
-    {icon:'sparkle',  label:'CircleAI Help',       action:()=>{STATE.showMenu=false;STATE.helpOpen=true;render();}},
-    {icon:'users',    label:'Live Campus Chat 🔴', action:()=>{STATE.showMenu=false;STATE.showRealChat=true;render();}},
-    {icon:'profile',  label:'My Profile',          action:()=>{STATE.activeTab='profile';STATE.showMenu=false;render();}},
-  ];
+  // ── Main nav items ─────────────────────────────────────────────────────────
+  body.appendChild(makeNavRow('home','Home',()=>{STATE.activeTab='home';STATE.showMenu=false;render();}));
+  body.appendChild(makeNavRow('circles','Open Circles',()=>{STATE.activeTab='circles';STATE.showMenu=false;render();}));
+  body.appendChild(makeNavRow('connect','Find People',()=>{STATE.activeTab='connect';STATE.showMenu=false;render();}));
+  body.appendChild(makeNavRow('msg','Messages',()=>{STATE.activeTab='messages';STATE.showMenu=false;render();}));
+  body.appendChild(makeNavRow('sparkle','CircleAI Help',()=>{STATE.showMenu=false;STATE.helpOpen=true;render();}));
+  body.appendChild(makeNavRow('users','Live Campus Chat 🔴',()=>{STATE.showMenu=false;STATE.showRealChat=true;render();}));
+  body.appendChild(makeNavRow('profile','My Profile',()=>{STATE.activeTab='profile';STATE.showMenu=false;render();}));
 
-  // Extra items — NEW
-  const extraMenuItems=[
-    {
-      icon:'book',
-      label:'Motivational Journal',
-      sublabel:'Built Not Born — ₹499',
-      iconBg:'linear-gradient(135deg,#3d2c00,#6b4c00)',
-      iconColor:'#f0c040',
-      labelColor:'var(--gray-800)',
-      sublabelColor:'#b8860b',
-      action:()=>{STATE.showMenu=false;STATE.showJournal=true;render();}
-    },
-    {
-      icon:'gamepad',
-      label:'Play a Game',
-      sublabel:'Final Fate · Choice & Consequences',
-      iconBg:'linear-gradient(135deg,#2d000a,#5c0011)',
-      iconColor:'#ef4444',
-      labelColor:'var(--gray-800)',
-      sublabelColor:'#dc2626',
-      action:()=>{STATE.showMenu=false;STATE.showGame=true;render();}
-    },
-  ];
-
-  mainMenuItems.forEach(item=>{
-    const row=el('button',{style:{display:'flex',alignItems:'center',gap:'16px',width:'100%',padding:'13px 22px',border:'none',background:'none',cursor:'pointer',fontFamily:'Nunito',textAlign:'left'},onClick:item.action});
-    row.innerHTML=`<div style="width:38px;height:38px;border-radius:12px;background:var(--purple-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none">${ICONS[item.icon].replace(/COLOR/g,'var(--purple)')}</svg></div><span style="font-size:14px;font-weight:800;color:var(--gray-700);">${item.label}</span>`;
-    body.appendChild(row);
-  });
-
-  // Divider
+  // ── Divider ────────────────────────────────────────────────────────────────
   const divider=el('div',{style:{height:'1px',background:'var(--gray-100)',margin:'8px 22px'}});
   body.appendChild(divider);
-  body.appendChild(makeSeparator('More'));
+  body.appendChild(makeSep('Activities & More'));
 
-  extraMenuItems.forEach(item=>{
-    const row=el('button',{style:{display:'flex',alignItems:'center',gap:'16px',width:'100%',padding:'13px 22px',border:'none',background:'none',cursor:'pointer',fontFamily:'Nunito',textAlign:'left'},onClick:item.action});
-    const iconWrap=el('div',{style:{width:'38px',height:'38px',borderRadius:'12px',background:item.iconBg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0'}});
-    iconWrap.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none">${ICONS[item.icon].replace(/COLOR/g,item.iconColor)}</svg>`;
-    const textWrap=el('div');
-    textWrap.innerHTML=`<p style="font-size:14px;font-weight:800;color:${item.labelColor};line-height:1.2;">${item.label}</p><p style="font-size:11px;font-weight:600;color:${item.sublabelColor};margin-top:2px;">${item.sublabel}</p>`;
-    row.appendChild(iconWrap);row.appendChild(textWrap);
-    body.appendChild(row);
-  });
+  // ── NEW: Community Activities ──────────────────────────────────────────────
+  const comRow=makeNavRow(
+    'activity',
+    'Community Activities',
+    ()=>{STATE.showMenu=false;STATE.showCommunityActivities=true;render();},
+    'linear-gradient(135deg,#0d3a24,#155e3a)',
+    '#4ade80',
+    'Carnival · Board Game · Food Event'
+  );
+  body.appendChild(comRow);
+
+  // ── NEW: Watch a Movie ────────────────────────────────────────────────────
+  const movieRow=makeNavRow(
+    'film',
+    'Watch a Movie',
+    ()=>{STATE.showMenu=false;STATE.showWatchMovie=true;render();},
+    'linear-gradient(135deg,#1a0000,#4a0000)',
+    '#f87171',
+    'Fear of Participation'
+  );
+  body.appendChild(movieRow);
+
+  // ── NEW: Built Not Born Journal (in nav only) ─────────────────────────────
+  const journalRow=makeNavRow(
+    'book',
+    'Built Not Born Journal',
+    ()=>{STATE.showMenu=false;STATE.showJournal=true;render();},
+    'linear-gradient(135deg,#3d2c00,#6b4c00)',
+    '#f0c040',
+    '₹499 · Your growth story starts here'
+  );
+  body.appendChild(journalRow);
 
   sheet.appendChild(body);
   const foot=el('div',{style:{padding:'16px 22px',borderTop:'1px solid var(--gray-100)'}});
@@ -1412,9 +1461,9 @@ function buildNotifsPanel(){
     {icon:'💬',title:'New message in Study Squad',sub:'25 minutes ago',action:()=>{STATE.showNotifs=false;STATE.activeTab='messages';render();}},
     {icon:'✨',title:'CircleAI has a tip for you!',sub:'1 hour ago',action:()=>{STATE.showNotifs=false;STATE.helpOpen=true;render();}},
     {icon:'👥',title:'3 people share your interests',sub:'2 hours ago',action:()=>{STATE.showNotifs=false;STATE.activeTab='connect';render();}},
-    {icon:'🔴',title:'Live Campus Chat is active now!',sub:'Real students online',action:()=>{STATE.showNotifs=false;STATE.showRealChat=true;render();}},
+    {icon:'🎪',title:'Community Activities — New event!',sub:'Chaat pe Baat · Aug 5 · Alpha Zone',action:()=>{STATE.showNotifs=false;STATE.showCommunityActivities=true;render();}},
+    {icon:'🎬',title:'Fear of Participation — Watch now!',sub:'New movie on campus life',action:()=>{STATE.showNotifs=false;STATE.showWatchMovie=true;render();}},
     {icon:'📔',title:'Built Not Born Journal — ₹499',sub:'Get your growth journal today!',action:()=>{STATE.showNotifs=false;STATE.showJournal=true;render();}},
-    {icon:'🎮',title:'Final Fate is waiting for you!',sub:'Play a choice & consequences game',action:()=>{STATE.showNotifs=false;STATE.showGame=true;render();}},
   ];
   notifs.forEach(n=>{
     const row=el('button',{style:{display:'flex',alignItems:'center',gap:'14px',width:'100%',padding:'12px 0',border:'none',background:'none',cursor:'pointer',fontFamily:'Nunito',textAlign:'left',borderBottom:'1px solid var(--gray-100)'},onClick:n.action});
@@ -1502,12 +1551,10 @@ function buildRealChat(){
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NEW: JOURNAL PURCHASE SCREEN
+// JOURNAL PURCHASE SCREEN (unchanged from original)
 // ─────────────────────────────────────────────────────────────────────────────
 function buildJournalScreen(){
   const wrap=el('div',{className:'modal-full journal-screen'});
-
-  // Header
   const hdr=el('div',{style:{padding:'16px 18px 0',display:'flex',alignItems:'center',gap:'12px',flexShrink:'0',background:'transparent',position:'absolute',top:'0',left:'0',right:'0',zIndex:'10'}});
   const backBtn=el('button',{style:{background:'rgba(0,0,0,.4)',backdropFilter:'blur(8px)',border:'none',borderRadius:'50%',width:'36px',height:'36px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'},onClick:()=>{STATE.showJournal=false;render();}});
   backBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none">${ICONS.back.replace(/COLOR/g,'white')}</svg>`;
@@ -1516,87 +1563,46 @@ function buildJournalScreen(){
   hdrTitle.textContent='Motivational Journal';
   hdr.appendChild(hdrTitle);
   wrap.appendChild(hdr);
-
-  // Hero image
   const hero=el('div',{className:'journal-hero'});
   const heroImg=el('img',{src:JOURNAL_IMG,alt:'Built Not Born Journal'});
   const heroOverlay=el('div',{className:'journal-hero-overlay'});
   hero.appendChild(heroImg);hero.appendChild(heroOverlay);
   wrap.appendChild(hero);
-
-  // Body
   const body=el('div',{className:'journal-body scroll'});
-
-  // Badge
   const badge=el('div',{className:'journal-badge'});
   badge.innerHTML='⭐ BESTSELLER · LIMITED STOCK';
   body.appendChild(badge);
-
-  // Title
-  body.innerHTML+=`
-    <h1 class="journal-title" style="margin-top:10px;">Built, <span>Not Born</span></h1>
-    <p class="journal-subtitle">The only journal that treats your growth like a mission. No fluff. No motivation porn. Just raw accountability and honest reflection.</p>
-  `;
-
-  // Price row
+  body.innerHTML+=`<h1 class="journal-title" style="margin-top:10px;">Built, <span>Not Born</span></h1><p class="journal-subtitle">The only journal that treats your growth like a mission. No fluff. No motivation porn. Just raw accountability and honest reflection.</p>`;
   const priceRow=el('div',{className:'journal-price-row'});
-  priceRow.innerHTML=`
-    <p class="journal-price">₹499</p>
-    <p class="journal-price-original">₹899</p>
-    <p class="journal-price-save">44% OFF</p>
-  `;
+  priceRow.innerHTML=`<p class="journal-price">₹499</p><p class="journal-price-original">₹899</p><p class="journal-price-save">44% OFF</p>`;
   body.appendChild(priceRow);
-
-  // Features
   const features=el('div',{className:'journal-features'});
-  const featureList=[
-    {icon:'📐',title:'180 structured pages',sub:'Daily prompts, weekly reviews, goal trackers'},
-    {icon:'💪',title:'Discipline-first design',sub:'Discipline · Focus · Consistency · Faith'},
-    {icon:'🏔️',title:'Growth milestone map',sub:'Visual progress tracking across 90 days'},
-    {icon:'🔒',title:'Premium hardcover',sub:'Smyth-sewn binding, lay-flat pages'},
-    {icon:'✍️',title:'Dotted grid paper',sub:'180gsm paper, fountain pen friendly'},
-  ];
-  featureList.forEach(f=>{
+  [{icon:'📐',title:'180 structured pages',sub:'Daily prompts, weekly reviews, goal trackers'},{icon:'💪',title:'Discipline-first design',sub:'Discipline · Focus · Consistency · Faith'},{icon:'🏔️',title:'Growth milestone map',sub:'Visual progress tracking across 90 days'},{icon:'🔒',title:'Premium hardcover',sub:'Smyth-sewn binding, lay-flat pages'},{icon:'✍️',title:'Dotted grid paper',sub:'180gsm paper, fountain pen friendly'}].forEach(f=>{
     const item=el('div',{className:'journal-feature-item'});
     item.innerHTML=`<div class="journal-feature-icon">${f.icon}</div><div class="journal-feature-text">${f.title}<span>${f.sub}</span></div>`;
     features.appendChild(item);
   });
   body.appendChild(features);
-
-  // Review snippet
-  body.innerHTML+=`
-    <div style="border:1px solid rgba(201,162,39,.25);background:rgba(201,162,39,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px;">
-      <p style="color:rgba(255,255,255,.8);font-size:13px;font-weight:600;line-height:1.55;font-style:italic;">"This journal changed how I think about my own potential. Same Mirror. Different Me — those four words alone were worth the price."</p>
-      <p style="color:rgba(201,162,39,.7);font-size:11px;font-weight:800;margin-top:8px;">— Rahul M., B.Tech CSE · Chitkara University ⭐⭐⭐⭐⭐</p>
-    </div>
-  `;
-
-  // Buy button (dead link)
-  const buyBtn=el('button',{className:'journal-buy-btn',onClick:()=>{/* dead link as requested */}});
+  body.innerHTML+=`<div style="border:1px solid rgba(201,162,39,.25);background:rgba(201,162,39,.06);border-radius:14px;padding:14px 16px;margin-bottom:20px;"><p style="color:rgba(255,255,255,.8);font-size:13px;font-weight:600;line-height:1.55;font-style:italic;">"This journal changed how I think about my own potential. Same Mirror. Different Me — those four words alone were worth the price."</p><p style="color:rgba(201,162,39,.7);font-size:11px;font-weight:800;margin-top:8px;">— Rahul M., B.Tech CSE · Chitkara University ⭐⭐⭐⭐⭐</p></div>`;
+  const buyBtn=el('button',{className:'journal-buy-btn',onClick:()=>{}});
   buyBtn.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="#0e0c14" stroke-width="2" stroke-linejoin="round"/><line x1="3" y1="6" x2="21" y2="6" stroke="#0e0c14" stroke-width="2"/><path d="M16 10a4 4 0 01-8 0" stroke="#0e0c14" stroke-width="2"/></svg> Buy Now — ₹499`;
   body.appendChild(buyBtn);
-
   body.innerHTML+=`<p class="journal-guarantee">🔐 Secure checkout · 📦 Free delivery on campus · 7-day return policy</p>`;
-
   wrap.appendChild(body);
   return wrap;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NEW: GAME DETAILS SCREEN
+// GAME SCREEN (unchanged from original)
 // ─────────────────────────────────────────────────────────────────────────────
 function buildGameScreen(){
   const FIGMA_URL='https://www.figma.com/proto/rfwPPpbBhUbOmV4j3jCTaX/Untitled?node-id=0-1&t=0MLnq8OkYxzmtxrZ-1';
   const wrap=el('div',{className:'modal-full game-screen'});
-
-  // Header
   const hdr=el('div',{style:{padding:'16px 18px 0',display:'flex',alignItems:'center',gap:'12px',flexShrink:'0',background:'transparent',position:'absolute',top:'0',left:'0',right:'0',zIndex:'10'}});
   const backBtn=el('button',{style:{background:'rgba(0,0,0,.5)',backdropFilter:'blur(8px)',border:'none',borderRadius:'50%',width:'36px',height:'36px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'},onClick:()=>{STATE.showGame=false;render();}});
   backBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none">${ICONS.back.replace(/COLOR/g,'white')}</svg>`;
   hdr.appendChild(backBtn);
   wrap.appendChild(hdr);
-
-  // Hero image
   const hero=el('div',{className:'game-hero'});
   const heroImg=el('img',{src:GAME_IMG,alt:'Final Fate game'});
   const heroOverlay=el('div',{className:'game-hero-overlay'});
@@ -1604,58 +1610,289 @@ function buildGameScreen(){
   heroBadge.textContent='● LIVE · FREE TO PLAY';
   hero.appendChild(heroImg);hero.appendChild(heroOverlay);hero.appendChild(heroBadge);
   wrap.appendChild(hero);
-
-  // Body
   const body=el('div',{className:'game-body scroll'});
-
-  // Genre tags
   const genreRow=el('div',{className:'game-genre-row'});
-  [
-    {label:'🎭 Choice-Based',color:'rgba(239,68,68,.8)',border:'rgba(239,68,68,.4)'},
-    {label:'🎓 Student Life',color:'rgba(168,85,247,.8)',border:'rgba(168,85,247,.4)'},
-    {label:'⚡ Consequences',color:'rgba(234,179,8,.8)',border:'rgba(234,179,8,.4)'},
-  ].forEach(g=>{
-    const t=el('span',{className:'game-genre-tag',style:{background:`rgba(0,0,0,.3)`,borderColor:g.border,color:g.color}});
-    t.textContent=g.label;genreRow.appendChild(t);
+  [{label:'🎭 Choice-Based',color:'rgba(239,68,68,.8)',border:'rgba(239,68,68,.4)'},{label:'🎓 Student Life',color:'rgba(168,85,247,.8)',border:'rgba(168,85,247,.4)'},{label:'⚡ Consequences',color:'rgba(234,179,8,.8)',border:'rgba(234,179,8,.4)'}].forEach(g=>{
+    const t=el('span',{className:'game-genre-tag',style:{background:'rgba(0,0,0,.3)',borderColor:g.border,color:g.color}});t.textContent=g.label;genreRow.appendChild(t);
   });
   body.appendChild(genreRow);
-
-  // Title
-  body.innerHTML+=`
-    <h1 class="game-title">Final <span>Fate</span></h1>
-    <p class="game-subtitle">Play a choice and consequences game — one path leads to success, the other to regret. Which route will you take?</p>
-  `;
-
-  // Stats
+  body.innerHTML+=`<h1 class="game-title">Final <span>Fate</span></h1><p class="game-subtitle">Play a choice and consequences game — one path leads to success, the other to regret. Which route will you take?</p>`;
   const statsRow=el('div',{className:'game-stats-row'});
   [['10K+','Players'],['4.8★','Rating'],['∞','Endings'],['Free','Forever']].forEach(([v,l])=>{
-    const s=el('div',{className:'game-stat'});
-    s.innerHTML=`<p class="game-stat-val">${v}</p><p class="game-stat-lbl">${l}</p>`;
-    statsRow.appendChild(s);
+    const s=el('div',{className:'game-stat'});s.innerHTML=`<p class="game-stat-val">${v}</p><p class="game-stat-lbl">${l}</p>`;statsRow.appendChild(s);
   });
   body.appendChild(statsRow);
-
-  // Description
   const desc=el('div',{className:'game-desc'});
-  desc.innerHTML=`<p>You stand at a crossroads — the <strong style="color:rgba(134,239,172,1);">Safe Path</strong> ahead with discipline and success, or the <strong style="color:rgba(239,68,68,1);">Risky Path</strong> shrouded in danger and regret. Every choice you make echoes forward. One decision. Countless consequences. <em style="color:rgba(255,255,255,.5);">Your fate is not written — it's built.</em></p>`;
+  desc.innerHTML=`<p>You stand at a crossroads — the <strong style="color:rgba(134,239,172,1);">Safe Path</strong> ahead with discipline and success, or the <strong style="color:rgba(239,68,68,1);">Risky Path</strong> shrouded in danger and regret. Every choice you make echoes forward. <em style="color:rgba(255,255,255,.5);">Your fate is not written — it's built.</em></p>`;
   body.appendChild(desc);
-
-  // Play button — opens Figma prototype
   const playBtn=el('button',{className:'game-play-btn',onClick:()=>{window.open(FIGMA_URL,'_blank');}});
   playBtn.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polygon points="5,3 19,12 5,21" fill="white"/></svg> Play Final Fate`;
   body.appendChild(playBtn);
-
   body.innerHTML+=`<p class="game-warning">🌐 Opens in browser · Powered by Figma Prototype · No download needed</p>`;
+  wrap.appendChild(body);
+  return wrap;
+}
 
-  // Also play inline link
+// ─────────────────────────────────────────────────────────────────────────────
+// NEW SCREEN: COMMUNITY ACTIVITIES (Carousel)
+// ─────────────────────────────────────────────────────────────────────────────
+const COMMUNITY_SLIDES = [
+  {
+    id: 'carnival',
+    title: 'Carnival — "Find the Fun"',
+    image: COMMUNITY_IMAGES.carnival,
+    tagLabel: '🎪 Physical & Social',
+    tagBg: 'rgba(251,146,60,.18)',
+    tagColor: '#fb923c',
+    tagBorder: 'rgba(251,146,60,.35)',
+    accentColor: '#fb923c',
+    accentBg: 'rgba(251,146,60,.12)',
+    description: 'Step into a world of fun, friends, and exciting challenges!',
+    subDescription: 'Explore. Play. Solve. Discover.',
+    features: ['Physical Challenges', 'Social Interaction', 'Teamwork & Spontaneity', 'Perfect for Events & Fests'],
+    btnText: 'Get Tickets',
+    btnStyle: 'background:linear-gradient(135deg,#f97316,#ea580c);color:white;box-shadow:0 8px 24px rgba(249,115,22,.4);',
+  },
+  {
+    id: 'boardgame',
+    title: 'Jodo Connection',
+    image: COMMUNITY_IMAGES.boardgame,
+    tagLabel: '🎲 Board Game',
+    tagBg: 'rgba(168,85,247,.15)',
+    tagColor: '#a855f7',
+    tagBorder: 'rgba(168,85,247,.35)',
+    accentColor: '#a855f7',
+    accentBg: 'rgba(168,85,247,.08)',
+    description: 'This game uses simple prompts and shape-based rules to encourage people to interact beyond their usual circles.',
+    subDescription: 'By turning social interaction into small, guided tasks, it reduces hesitation and makes conversations feel natural and low-pressure.',
+    features: ['Inclusive & Low-Pressure', 'Shape-Based Rules', 'Natural Conversations', 'Connect Through Play'],
+    btnText: 'Buy Now',
+    btnStyle: 'background:linear-gradient(135deg,#9333ea,#7c3aed);color:white;box-shadow:0 8px 24px rgba(147,51,234,.4);',
+  },
+  {
+    id: 'chaatpebaat',
+    title: 'Chaat pe Baat',
+    image: COMMUNITY_IMAGES.chaatpebaat,
+    tagLabel: '🍛 Food Community Event',
+    tagBg: 'rgba(234,179,8,.15)',
+    tagColor: '#eab308',
+    tagBorder: 'rgba(234,179,8,.35)',
+    accentColor: '#eab308',
+    accentBg: 'rgba(234,179,8,.08)',
+    description: 'Where Flavors Meet Conversations',
+    subDescription: 'Chitkara University Alpha Zone',
+    eventDetails: [
+      {icon:'📅', text:'5 Aug 2026'},
+      {icon:'⏰', text:'12:30 PM'},
+      {icon:'📍', text:'Chitkara University Alpha Zone'},
+    ],
+    features: ['Enjoy Delicious Chaat', 'Engage in Fun Talks', 'Celebrate Together'],
+    btnText: 'Book Tickets',
+    btnStyle: 'background:linear-gradient(135deg,#ca8a04,#a16207);color:white;box-shadow:0 8px 24px rgba(202,138,4,.4);',
+  },
+];
+
+function buildCommunityActivitiesScreen(){
+  const wrap=el('div',{className:'modal-full community-screen'});
+
+  // Header
+  const hdr=el('div',{style:{padding:'16px 20px 0',display:'flex',alignItems:'center',gap:'12px',flexShrink:'0',background:'#0a0814',zIndex:'5'}});
+  const backBtn=el('button',{style:{background:'rgba(255,255,255,.1)',border:'none',borderRadius:'50%',width:'36px',height:'36px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0'},onClick:()=>{STATE.showCommunityActivities=false;render();}});
+  backBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none">${ICONS.back.replace(/COLOR/g,'white')}</svg>`;
+  hdr.appendChild(backBtn);
+  const hdrInfo=el('div',{style:{flex:'1'}});
+  hdrInfo.innerHTML=`<p style="font-weight:900;font-size:16px;color:white;">Community Activities</p><p style="font-size:11px;color:rgba(255,255,255,.5);font-weight:600;">Slide ${STATE.communitySlide+1} of ${COMMUNITY_SLIDES.length}</p>`;
+  hdr.appendChild(hdrInfo);
+
+  // Carousel dots in header area
+  const dotsWrap=el('div',{className:'carousel-dots',style:{margin:'0'}});
+  COMMUNITY_SLIDES.forEach((_,i)=>{
+    const dot=el('div',{className:'carousel-dot'+(STATE.communitySlide===i?' active':''),onClick:()=>{STATE.communitySlide=i;render();}});
+    dotsWrap.appendChild(dot);
+  });
+  hdr.appendChild(dotsWrap);
+  wrap.appendChild(hdr);
+
+  // Slide content
+  const slide=COMMUNITY_SLIDES[STATE.communitySlide];
+  const scrollArea=el('div',{className:'scroll',style:{padding:'16px 20px 40px',background:'#0a0814'}});
+
+  // Touch/swipe support
+  let touchStartX=0;
+  scrollArea.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
+  scrollArea.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-touchStartX;
+    if(Math.abs(dx)>50){
+      if(dx<0&&STATE.communitySlide<COMMUNITY_SLIDES.length-1){STATE.communitySlide++;render();}
+      else if(dx>0&&STATE.communitySlide>0){STATE.communitySlide--;render();}
+    }
+  },{passive:true});
+
+  const slideDiv=el('div',{className:'community-slide'});
+
+  // Poster image
+  const posterImg=el('img',{src:slide.image,alt:slide.title,className:'community-poster'});
+  posterImg.onerror=()=>{posterImg.style.display='none';};
+  slideDiv.appendChild(posterImg);
+
+  // Tag
+  const tag=el('div',{className:'community-tag',style:{background:slide.tagBg,color:slide.tagColor,border:`1.5px solid ${slide.tagBorder}`}});
+  tag.textContent=slide.tagLabel;
+  slideDiv.appendChild(tag);
+
+  // Title
+  const title=el('h2',{style:{fontSize:'24px',fontWeight:'900',color:'white',marginBottom:'10px',lineHeight:'1.2'}});
+  title.textContent=slide.title;
+  slideDiv.appendChild(title);
+
+  // Description
+  const desc=el('p',{style:{fontSize:'14px',color:'rgba(255,255,255,.8)',fontWeight:'600',lineHeight:'1.6',marginBottom:'8px'}});
+  desc.textContent=slide.description;
+  slideDiv.appendChild(desc);
+
+  if(slide.subDescription){
+    const subDesc=el('p',{style:{fontSize:'13px',color:'rgba(255,255,255,.55)',fontWeight:'600',lineHeight:'1.5',marginBottom:'14px',fontStyle:'italic'}});
+    subDesc.textContent=slide.subDescription;
+    slideDiv.appendChild(subDesc);
+  }
+
+  // Event details (for Chaat pe Baat)
+  if(slide.eventDetails){
+    const evtBox=el('div',{style:{background:'rgba(255,255,255,.06)',border:`1px solid rgba(255,255,255,.1)`,borderRadius:'14px',padding:'12px 14px',marginBottom:'14px',display:'flex',flexDirection:'column',gap:'6px'}});
+    slide.eventDetails.forEach(d=>{
+      const row=el('div',{style:{display:'flex',alignItems:'center',gap:'10px'}});
+      row.innerHTML=`<span style="font-size:16px;">${d.icon}</span><span style="font-size:13px;color:rgba(255,255,255,.8);font-weight:700;">${d.text}</span>`;
+      evtBox.appendChild(row);
+    });
+    slideDiv.appendChild(evtBox);
+  }
+
+  // Features
+  if(slide.features && slide.features.length>0){
+    const featTitle=el('p',{style:{fontSize:'11px',fontWeight:'800',color:slide.accentColor,letterSpacing:'.8px',textTransform:'uppercase',marginBottom:'8px'}});
+    featTitle.textContent='What makes it awesome?';
+    slideDiv.appendChild(featTitle);
+    const featBox=el('div',{style:{background:slide.accentBg,border:`1px solid ${slide.tagBorder}`,borderRadius:'14px',padding:'12px 14px',marginBottom:'20px',display:'flex',flexDirection:'column',gap:'6px'}});
+    slide.features.forEach(f=>{
+      const row=el('div',{style:{display:'flex',alignItems:'center',gap:'10px'}});
+      row.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="${slide.accentColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:13px;color:rgba(255,255,255,.8);font-weight:700;">${f}</span>`;
+      featBox.appendChild(row);
+    });
+    slideDiv.appendChild(featBox);
+  }
+
+  // CTA button (dead)
+  const ctaBtn=el('button',{className:'community-cta-btn',style:slide.btnStyle,onClick:()=>{/* dead button — no action */}});
+  ctaBtn.textContent=slide.btnText;
+  slideDiv.appendChild(ctaBtn);
+
+  // Navigation arrows
+  const navRow=el('div',{className:'carousel-nav',style:{padding:'0 0 8px'}});
+
+  const prevBtn=el('button',{className:'carousel-arrow',onClick:()=>{if(STATE.communitySlide>0){STATE.communitySlide--;render();}}});
+  prevBtn.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  if(STATE.communitySlide===0)prevBtn.setAttribute('disabled','');
+
+  const slideCounter=el('p',{style:{color:'rgba(255,255,255,.6)',fontSize:'13px',fontWeight:'800',letterSpacing:'.5px'}});
+  slideCounter.textContent=`${STATE.communitySlide+1} / ${COMMUNITY_SLIDES.length}`;
+
+  const nextBtn=el('button',{className:'carousel-arrow',onClick:()=>{if(STATE.communitySlide<COMMUNITY_SLIDES.length-1){STATE.communitySlide++;render();}}});
+  nextBtn.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  if(STATE.communitySlide===COMMUNITY_SLIDES.length-1)nextBtn.setAttribute('disabled','');
+
+  navRow.appendChild(prevBtn);
+  navRow.appendChild(slideCounter);
+  navRow.appendChild(nextBtn);
+  slideDiv.appendChild(navRow);
+
+  scrollArea.appendChild(slideDiv);
+  wrap.appendChild(scrollArea);
+  return wrap;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NEW SCREEN: WATCH A MOVIE
+// ─────────────────────────────────────────────────────────────────────────────
+function buildWatchMovieScreen(){
+  const wrap=el('div',{className:'modal-full movie-screen'});
+
+  // Header
+  const hdr=el('div',{style:{padding:'16px 20px',display:'flex',alignItems:'center',gap:'12px',flexShrink:'0',background:'transparent',position:'relative',zIndex:'5'}});
+  const backBtn=el('button',{style:{background:'rgba(255,255,255,.08)',backdropFilter:'blur(8px)',border:'1px solid rgba(255,255,255,.1)',borderRadius:'50%',width:'38px',height:'38px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:'0'},onClick:()=>{STATE.showWatchMovie=false;render();}});
+  backBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none">${ICONS.back.replace(/COLOR/g,'white')}</svg>`;
+  hdr.appendChild(backBtn);
+  const hdrInfo=el('div',{style:{flex:'1'}});
+  hdrInfo.innerHTML=`<p style="font-weight:900;font-size:16px;color:white;">Watch a Movie</p><p style="font-size:11px;color:rgba(255,255,255,.4);font-weight:600;">CU Circle Film · Campus Life</p>`;
+  hdr.appendChild(hdrInfo);
+
+  // Red live badge
+  const badge=el('div',{style:{background:'rgba(220,38,38,.85)',color:'white',fontSize:'10px',fontWeight:'900',padding:'5px 12px',borderRadius:'20px',letterSpacing:'.8px',animation:'gamePulse 2s infinite'}});
+  badge.textContent='● NEW';
+  hdr.appendChild(badge);
+  wrap.appendChild(hdr);
+
+  // Scrollable content
+  const scrollArea=el('div',{className:'scroll',style:{background:'#06040d'}});
+  const body=el('div',{style:{padding:'0 22px 60px'}});
+
+  // Movie poster — centered & prominent
+  const posterWrap=el('div',{className:'movie-poster-wrap'});
+  const poster=el('img',{src:MOVIE_POSTER,alt:'Fear of Participation movie poster',className:'movie-poster'});
+  poster.onerror=()=>{
+    poster.style.display='none';
+    const placeholder=el('div',{style:{width:'100%',maxWidth:'280px',height:'380px',background:'rgba(220,38,38,.1)',border:'1px solid rgba(220,38,38,.25)',borderRadius:'20px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'12px'}});
+    placeholder.innerHTML=`<span style="font-size:64px;">🎬</span><p style="color:rgba(255,255,255,.5);font-size:14px;font-weight:700;text-align:center;">Fear of Participation<br><span style="font-size:11px;opacity:.6;">Poster image (image_8.png)</span></p>`;
+    posterWrap.appendChild(placeholder);
+  };
+  posterWrap.appendChild(poster);
+  body.appendChild(posterWrap);
+
+  // Movie title & subtitle
   body.innerHTML+=`
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;cursor:pointer;" onclick="window.open('${FIGMA_URL}','_blank')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(239,68,68,.7)" stroke-width="1.9"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="rgba(239,68,68,.7)" stroke-width="1.9" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="rgba(239,68,68,.7)" stroke-width="2.8" stroke-linecap="round"/></svg>
-      <p style="color:rgba(255,255,255,.5);font-size:12px;font-weight:700;">Figma Prototype Link: figma.com/proto/rfwPPpb...</p>
+    <div style="text-align:center;margin-bottom:20px;">
+      <h1 style="font-size:26px;font-weight:900;color:white;letter-spacing:-.5px;margin-bottom:8px;line-height:1.2;">Fear of Participation</h1>
+      <p style="font-size:13px;color:rgba(220,38,38,.85);font-weight:800;line-height:1.5;max-width:280px;margin:0 auto;">Silence isn't choice. Sometimes, it's FEAR. &amp; SOCIAL HIERARCHY.</p>
     </div>
   `;
 
-  wrap.appendChild(body);
+  // Genre tags
+  const genreRow=el('div',{style:{display:'flex',gap:'8px',justifyContent:'center',flexWrap:'wrap',marginBottom:'20px'}});
+  [
+    {l:'🎭 Drama',c:'rgba(239,68,68,.75)',b:'rgba(239,68,68,.3)'},
+    {l:'🎓 Campus Life',c:'rgba(168,85,247,.75)',b:'rgba(168,85,247,.3)'},
+    {l:'💔 Social Anxiety',c:'rgba(251,146,60,.75)',b:'rgba(251,146,60,.3)'},
+  ].forEach(g=>{
+    const t=el('span',{style:{fontSize:'11px',fontWeight:'800',padding:'4px 12px',borderRadius:'20px',border:`1px solid ${g.b}`,background:'rgba(0,0,0,.3)',color:g.c,letterSpacing:'.4px'}});
+    t.textContent=g.l;genreRow.appendChild(t);
+  });
+  body.appendChild(genreRow);
+
+  // Synopsis box
+  const synopsis=el('div',{style:{background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.08)',borderRadius:'18px',padding:'16px 18px',marginBottom:'24px'}});
+  synopsis.innerHTML=`
+    <p style="font-size:11px;font-weight:800;color:rgba(220,38,38,.7);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;">Synopsis</p>
+    <p style="font-size:14px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.65;">A powerful drama exploring the invisible barriers of social circles. Silence isn't choice. A story about courage and breaking the cycle of being silent.</p>
+  `;
+  body.appendChild(synopsis);
+
+  // Stats row
+  const stats=el('div',{style:{display:'flex',gap:'10px',marginBottom:'28px'}});
+  [['🎬','Drama'],['🏫','Campus'],['⭐','New'],['🆓','Free']].forEach(([icon,label])=>{
+    const s=el('div',{style:{flex:'1',background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.07)',borderRadius:'14px',padding:'10px 6px',textAlign:'center'}});
+    s.innerHTML=`<p style="font-size:20px;margin-bottom:3px;">${icon}</p><p style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.4px;">${label}</p>`;
+    stats.appendChild(s);
+  });
+  body.appendChild(stats);
+
+  // Watch Now button — EXPLICITLY DEAD (no action on press, just visual feedback)
+  const watchBtn=el('button',{className:'watch-now-btn',onClick:()=>{/* Dead button — explicitly does nothing */}});
+  watchBtn.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><polygon points="5,3 19,12 5,21" fill="white"/></svg> Watch Now`;
+  body.appendChild(watchBtn);
+
+  body.innerHTML+=`<p style="text-align:center;font-size:11px;color:rgba(255,255,255,.25);font-weight:600;margin-top:10px;">🎬 Coming soon to CU Circle streaming · Campus exclusive screening</p>`;
+
+  scrollArea.appendChild(body);
+  wrap.appendChild(scrollArea);
   return wrap;
 }
 
