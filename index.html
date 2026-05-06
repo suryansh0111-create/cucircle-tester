@@ -599,8 +599,8 @@ function buildWelcome(){
   const scroll=el('div',{className:'scroll',style:{padding:'36px 28px 40px'}});
   scroll.innerHTML=`
     <div style="display:flex;justify-content:center;margin-bottom:16px;">
-      <div style="width:88px;height:88px;border-radius:28px;background:var(--purple-pale);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(124,58,237,.2);">
-        <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="20" r="9" fill="var(--purple)"/><circle cx="14" cy="38" r="7" fill="var(--purple-lt)"/><circle cx="42" cy="38" r="7" fill="var(--lavender)"/><path d="M14 38 Q28 26 42 38" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linecap="round"/><circle cx="28" cy="8" r="4" fill="var(--pink)" opacity=".7"/></svg>
+      <div style="width:110px;height:110px;border-radius:28px;background:var(--white);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(124,58,237,.2);overflow:hidden;">
+        <img src="logo.jpeg" alt="CU Circle Logo" style="width:100%;height:100%;object-fit:contain;border-radius:28px;"/>
       </div>
     </div>
     <p style="text-align:center;font-size:26px;font-weight:900;color:var(--purple);letter-spacing:2px;margin-bottom:4px;">CU CIRCLE</p>
@@ -1394,16 +1394,6 @@ function buildMenuPanel(){
   body.appendChild(makeNavRow('users','Live Campus Chat 🔴',()=>{STATE.showMenu=false;STATE.showRealChat=true;render();}));
   body.appendChild(makeNavRow('profile','My Profile',()=>{STATE.activeTab='profile';STATE.showMenu=false;render();}));
 
-  // ── NEW: Play a Game — below My Profile, before divider ───────────────────
-  body.appendChild(makeNavRow(
-    'gamepad',
-    'Play a Game',
-    ()=>{STATE.showMenu=false;STATE.showGame=true;render();},
-    'linear-gradient(135deg,#1a0010,#4a0022)',
-    '#f87171',
-    'Final Fate · Free to Play'
-  ));
-
   // ── Divider ────────────────────────────────────────────────────────────────
   const divider=el('div',{style:{height:'1px',background:'var(--gray-100)',margin:'8px 22px'}});
   body.appendChild(divider);
@@ -1431,16 +1421,26 @@ function buildMenuPanel(){
   );
   body.appendChild(movieRow);
 
-  // ── Built Not Born Journal ─────────────────────────────────────────────────
+  // ── Read a Journal (nav label renamed; journal interior unchanged) ──────────
   const journalRow=makeNavRow(
     'book',
-    'Built Not Born Journal',
+    'Read a Journal',
     ()=>{STATE.showMenu=false;STATE.showJournal=true;render();},
     'linear-gradient(135deg,#3d2c00,#6b4c00)',
     '#f0c040',
     '₹499 · Your growth story starts here'
   );
   body.appendChild(journalRow);
+
+  // ── Play a Game — under Activities & More, below journal ─────────────────
+  body.appendChild(makeNavRow(
+    'gamepad',
+    'Play a Game',
+    ()=>{STATE.showMenu=false;STATE.showGame=true;render();},
+    'linear-gradient(135deg,#1a0010,#4a0022)',
+    '#f87171',
+    'Final Fate · Free to Play'
+  ));
 
   sheet.appendChild(body);
   const foot=el('div',{style:{padding:'16px 22px',borderTop:'1px solid var(--gray-100)'}});
@@ -1462,7 +1462,7 @@ function buildNotifsPanel(){
     {icon:'🎮',title:'Play Final Fate — New game!',sub:'Choice-based campus adventure · Free',action:()=>{STATE.showNotifs=false;STATE.showGame=true;render();}},
     {icon:'🎪',title:'Community Activities — New event!',sub:'Chaat pe Baat · Aug 5 · Alpha Zone',action:()=>{STATE.showNotifs=false;STATE.showCommunityActivities=true;render();}},
     {icon:'🎬',title:'Fear of Participation — Watch now!',sub:'New movie on campus life',action:()=>{STATE.showNotifs=false;STATE.showWatchMovie=true;render();}},
-    {icon:'📔',title:'Built Not Born Journal — ₹499',sub:'Get your growth journal today!',action:()=>{STATE.showNotifs=false;STATE.showJournal=true;render();}},
+    {icon:'📔',title:'Read a Journal — ₹499',sub:'Get your growth journal today!',action:()=>{STATE.showNotifs=false;STATE.showJournal=true;render();}},
   ];
   notifs.forEach(n=>{
     const row=el('button',{style:{display:'flex',alignItems:'center',gap:'14px',width:'100%',padding:'12px 0',border:'none',background:'none',cursor:'pointer',fontFamily:'Nunito',textAlign:'left',borderBottom:'1px solid var(--gray-100)'},onClick:n.action});
@@ -1595,7 +1595,6 @@ function buildJournalScreen(){
 // GAME SCREEN — Updated with functional Play button + final_fate.jpeg hero
 // ─────────────────────────────────────────────────────────────────────────────
 function buildGameScreen(){
-  const FIGMA_URL='https://www.figma.com/proto/rfwPPpbBhUbOmV4j3jCTaX/Untitled?node-id=0-1&t=0MLnq8OkYxzmtxrZ-1';
   const wrap=el('div',{className:'modal-full game-screen'});
   const hdr=el('div',{style:{padding:'16px 18px 0',display:'flex',alignItems:'center',gap:'12px',flexShrink:'0',background:'transparent',position:'absolute',top:'0',left:'0',right:'0',zIndex:'10'}});
   const backBtn=el('button',{style:{background:'rgba(0,0,0,.5)',backdropFilter:'blur(8px)',border:'none',borderRadius:'50%',width:'36px',height:'36px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'},onClick:()=>{STATE.showGame=false;render();}});
@@ -1625,7 +1624,10 @@ function buildGameScreen(){
   desc.innerHTML=`<p>You stand at a crossroads — the <strong style="color:rgba(134,239,172,1);">Safe Path</strong> ahead with discipline and success, or the <strong style="color:rgba(239,68,68,1);">Risky Path</strong> shrouded in danger and regret. Every choice you make echoes forward. <em style="color:rgba(255,255,255,.5);">Your fate is not written — it's built.</em></p>`;
   body.appendChild(desc);
   // ── FUNCTIONAL Play button that opens Figma prototype in new tab ──────────
-  const playBtn=el('button',{className:'game-play-btn',onClick:()=>{window.open(FIGMA_URL,'_blank','noopener,noreferrer');}});
+  const playBtn=el('button',{className:'game-play-btn',onClick:()=>{
+    const _u='https://www.figma.com/proto/rfwPPpbBhUbOmV4j3jCTaX/Untitled?node-id=0-1&t=0MLnq8OkYxzmtxrZ-1';
+    window.open(_u,'_blank','noopener,noreferrer');
+  }});
   playBtn.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polygon points="5,3 19,12 5,21" fill="white"/></svg> Play Final Fate`;
   body.appendChild(playBtn);
   body.innerHTML+=`<p class="game-warning">🌐 Opens in browser · Powered by Figma Prototype · No download needed</p>`;
@@ -1692,24 +1694,6 @@ const COMMUNITY_SLIDES = [
     btnText: 'Book Tickets',
     btnStyle: 'background:linear-gradient(135deg,#ca8a04,#a16207);color:white;box-shadow:0 8px 24px rgba(202,138,4,.4);',
     isGame: false,
-  },
-  {
-    id: 'playfate',
-    title: 'Final Fate: Route Unknown',
-    image: COMMUNITY_IMAGES.carnival, // fallback — actual game image shown in game screen
-    imageOverride: GAME_IMG,
-    tagLabel: '🎮 Choice-Based Game',
-    tagBg: 'rgba(239,68,68,.18)',
-    tagColor: '#ef4444',
-    tagBorder: 'rgba(239,68,68,.4)',
-    accentColor: '#ef4444',
-    accentBg: 'rgba(239,68,68,.08)',
-    description: 'One choice. Countless consequences.',
-    subDescription: 'Navigate campus crossroads — Safe Path or Risky Path. Your fate is not written, it is built.',
-    features: ['Choice-Based Gameplay', 'Consequence System', 'Campus Story', 'Free to Play'],
-    btnText: '▶  Play Final Fate',
-    btnStyle: 'background:linear-gradient(135deg,#ef4444,#b91c1c);color:white;box-shadow:0 8px 28px rgba(239,68,68,.45);font-size:17px;',
-    isGame: true,
   },
 ];
 
