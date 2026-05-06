@@ -387,7 +387,7 @@ const COMMUNITY_IMAGES = {
 };
 
 // Watch a Movie poster
-const MOVIE_POSTER = 'final_fate.jpeg';
+const MOVIE_POSTER = 'fearofparticipation.jpeg';
 
 function avatarBg(name=''){
   const h=(name.charCodeAt(0)||0)*37+((name.charCodeAt(1)||0)*13);
@@ -1625,8 +1625,7 @@ function buildGameScreen(){
   body.appendChild(desc);
   // ── FUNCTIONAL Play button that opens Figma prototype in new tab ──────────
   const playBtn=el('button',{className:'game-play-btn',onClick:()=>{
-    const _u='https://www.figma.com/proto/rfwPPpbBhUbOmV4j3jCTaX/Untitled?node-id=0-1&t=0MLnq8OkYxzmtxrZ-1';
-    window.open(_u,'_blank','noopener,noreferrer');
+    window.open('https://www.figma.com/proto/rfwPPpbBhUbOmV4j3jCTaX/Untitled?node-id=0-1&t=0MLnq8OkYxzmtxrZ-1','_blank','noopener,noreferrer');
   }});
   playBtn.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polygon points="5,3 19,12 5,21" fill="white"/></svg> Play Final Fate`;
   body.appendChild(playBtn);
